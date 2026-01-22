@@ -7,7 +7,7 @@ using System;
 using System.Text;
 using System.Threading;
 
-namespace pain
+namespace beepbeep
 {
     public class Program
     {
@@ -41,6 +41,7 @@ namespace pain
          * If value is within 10% of center, clear it.
          * @param value [out] floating point value to deadband.
          */
+
         static void Deadband(ref float value)
         {
             if (value < -0.10)
@@ -66,6 +67,12 @@ namespace pain
             float y = -1 * _gamepad.GetAxis(1);
             float twist = _gamepad.GetAxis(2);
 
+            bool spinButton1 = _gamepad.GetButton(1);
+            bool spinButton2 = _gamepad.GetButton(2);
+            bool spinButton3 = _gamepad.GetButton(3);
+            bool spinButton4 = _gamepad.GetButton(4);
+            bool spinButton5 = _gamepad.GetButton(13
+                );
             Deadband(ref x);
             Deadband(ref y);
             Deadband(ref twist);
@@ -73,10 +80,24 @@ namespace pain
             float leftThrot = y + twist;
             float rightThrot = y - twist;
 
-            left.Set(ControlMode.PercentOutput, (leftThrot*0.62));
-            leftSlave.Set(ControlMode.PercentOutput, (leftThrot*0.62));
-            right.Set(ControlMode.PercentOutput, (-rightThrot*0.62));
-            rightSlave.Set(ControlMode.PercentOutput, (-rightThrot*0.62));
+            if (spinButton1 && spinButton2 && spinButton3 && spinButton4 && spinButton5) 
+            {
+                // BUTTON MODE
+                left.Set(ControlMode.PercentOutput, .3);
+                leftSlave.Set(ControlMode.PercentOutput, .3);
+                right.Set(ControlMode.PercentOutput, .3);
+                rightSlave.Set(ControlMode.PercentOutput, .3);
+
+                
+            }
+            else
+            {
+                // JOYSTICK DRIVE MODE
+                left.Set(ControlMode.PercentOutput, leftThrot * 0.5);
+                leftSlave.Set(ControlMode.PercentOutput, leftThrot * 0.5);
+                right.Set(ControlMode.PercentOutput, -rightThrot * 0.5);
+                rightSlave.Set(ControlMode.PercentOutput, -rightThrot * 0.5);
+            }
 
             stringBuilder.Append("\t");
             stringBuilder.Append(x);
@@ -84,7 +105,6 @@ namespace pain
             stringBuilder.Append(y);
             stringBuilder.Append("\t");
             stringBuilder.Append(twist);
-
         }
     }
 }
